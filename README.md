@@ -109,8 +109,8 @@ parla/
 
 As this project is designed for me to learn and gain experience with multiple new technologies, here is my step-by-step build plan:
 
-- **Phase 1**: ✅ Command-line tool with file storage (current)
-- **Phase 2**: SQL database backend
+- **Phase 1**: ✅ Command-line tool with file storage 
+- **Phase 2**: ✅ SQL database backend (current)
 - **Phase 3**: Web application (HTML/CSS frontend, servlet backend)
 - **Phase 4**: Modern web API (Spring Boot backend, React frontend)
 - **Phase 5**: Mobile app (React Native frontend)
