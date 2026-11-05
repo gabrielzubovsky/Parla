@@ -7,7 +7,7 @@ import java.sql.*;
  * Manages the vocabulary and quiz history for the application.
  * <p>
  * This class keeps an in-memory list of words and quiz results while also
- * persisting changes to a PostgreSQL database. It loads existing data on
+ * persisting changes to a SQLite database. It loads existing data on
  * construction and updates database records as words and quizzes are modified.
  */
 public class Words {
@@ -337,7 +337,7 @@ public class Words {
     }
 
     /**
-     * Loads saved words and quiz history from the PostgreSQL database.
+     * Loads saved words and quiz history from the SQLite database.
      */
     private void loadData() {
         if (conn == null) {
@@ -362,9 +362,10 @@ public class Words {
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT id, date, score, num_questions FROM quizzes ORDER BY date")) {
             while (rs.next()) {
-                Quiz quiz = new Quiz( rs.getInt("id"), 
-                                      rs.getInt("num_questions"), 
-                                      rs.getInt("score"));
+                Quiz quiz = new Quiz( rs.getInt("id"),
+                                      rs.getInt("score"),
+                                      rs.getInt("num_questions"));
+                quiz.date = LocalDate.parse(rs.getString("date"), DATE_FORMAT);
 
                 try (PreparedStatement questionStmt = conn.prepareStatement(
                         "SELECT foreign_word, translation FROM quiz_words WHERE quiz_id = ? ORDER BY id")) {
