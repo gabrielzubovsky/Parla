@@ -1,2 +1,4 @@
 target/
 parla.db
+frontend/node_modules/
+effective-pom-*.log
