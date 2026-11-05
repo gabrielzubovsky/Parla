@@ -94,15 +94,20 @@ Parla uses a threshold-based algorithm to select quiz words:
 
 ```
 parla/
-├── pom.xml            # Maven project descriptor
-├── README.md          # This file
+├── pom.xml                  # Maven project descriptor
+├── mvnw, mvnw.cmd           # Maven Wrapper scripts (Unix / Windows)
+├── .mvn/wrapper/            # Maven Wrapper configuration
+├── README.md                # This file
 ├── src/main/java/
-│   ├── Main.java
-│   ├── Words.java
-│   ├── DatabaseHelper.java
-│   ├── Word.java
-│   └── Quiz.java
-└── src/main/resources/  # optional runtime resources
+│   ├── Main.java            # Command-line entry point
+│   ├── Words.java           # Word and quiz management, persistence
+│   ├── DatabaseHelper.java  # SQLite connection and schema setup
+│   ├── Word.java            # A single vocabulary entry
+│   ├── Language.java        # Enum of supported languages
+│   └── Quiz.java            # A quiz session: score, questions, words quizzed
+└── src/main/resources/
+    └── static/              # Built web frontend (index.html, assets/)
 ```
+
 
 Any and all feedback would be greatly appreciated; please email ghzubovsky@dons.usfca.edu.
