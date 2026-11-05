@@ -18,7 +18,7 @@ Parla is a personal vocabulary management system designed for language learners.
 ## Installation
 
 ### Requirements
-- Java 17 or higher
+- Java 25 or higher
 - Maven
 - PostgreSQL database server
 - A terminal/command line interface
