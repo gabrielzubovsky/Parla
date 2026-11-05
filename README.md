@@ -93,6 +93,7 @@ Parla uses a threshold-based algorithm to select quiz words:
 
 ## File Structure
 
+```
 parla/
 ├── pom.xml            # Maven project descriptor
 ├── README.md          # This file
@@ -103,5 +104,6 @@ parla/
 │   ├── Word.java
 │   └── Quiz.java
 └── src/main/resources/  # optional runtime resources
+```
 
 Any and all feedback would be greatly appreciated; please email ghzubovsky@dons.usfca.edu.
