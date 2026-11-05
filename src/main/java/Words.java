@@ -62,14 +62,14 @@ public class Words {
      * @param foreignWord the word to translate
      * @param englishTranslation the English translation for the foreign word
      */
-    public void addWord(String language, String foreignWord, String englishTranslation) {
+    public void addWord(Language language, String foreignWord, String englishTranslation) {
         Word newWord = new Word(-1, language, foreignWord, englishTranslation, 0, LocalDate.now());
 
         if (conn != null) {
             try (PreparedStatement stmt = conn.prepareStatement(
                     "INSERT INTO words(language, foreign_word, english, lookups, added_date) VALUES (?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS)) {
-                stmt.setString(1, language);
+                stmt.setString(1, language.name());
                 stmt.setString(2, foreignWord);
                 stmt.setString(3, englishTranslation);
                 stmt.setInt(4, newWord.lookups);
@@ -139,9 +139,9 @@ public class Words {
      * Returns the language for a given foreign word.
      *
      * @param foreignWord the foreign word to inspect
-     * @return the language name or {@code null} if the word is not found
+     * @return the language or {@code null} if the word is not found
      */
-    public String getLanguage(String foreignWord) {
+    public Language getLanguage(String foreignWord) {
         for (Word word : words) {
             if (word.foreign.equalsIgnoreCase(foreignWord)) {
                 return word.language;
@@ -347,8 +347,15 @@ public class Words {
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT id, language, foreign_word, english, lookups, added_date FROM words")) {
             while (rs.next()) {
+                Language language;
+                try {
+                    language = Language.parse(rs.getString("language"));
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Skipping word id " + rs.getInt("id") + ": " + e.getMessage());
+                    continue;
+                }
                 Word word = new Word( rs.getInt("id"), 
-                                      rs.getString("language"), 
+                                      language, 
                                       rs.getString("foreign_word"), 
                                       rs.getString("english"), 
                                       rs.getInt("lookups"), 

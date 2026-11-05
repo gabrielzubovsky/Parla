@@ -43,7 +43,7 @@ public class DatabaseHelper {
         try (Statement stmt = conn.createStatement()) {
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS words ("
                     + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + "language TEXT NOT NULL, "
+                    + "language TEXT NOT NULL CHECK (language IN (" + languageCheckList() + ")), "
                     + "foreign_word TEXT NOT NULL, "
                     + "english TEXT NOT NULL, "
                     + "lookups INTEGER NOT NULL, "
@@ -64,6 +64,23 @@ public class DatabaseHelper {
                     + "translation TEXT NOT NULL"
                     + ")");
         }
+    }
+
+    /**
+     * Builds a quoted, comma-separated list of every {@link Language} constant name
+     * for use in a SQL CHECK constraint.
+     *
+     * @return e.g. {@code 'ENGLISH', 'FRENCH', ...}
+     */
+    private static String languageCheckList() {
+        StringBuilder sb = new StringBuilder();
+        for (Language l : Language.values()) {
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+            sb.append('\'').append(l.name()).append('\'');
+        }
+        return sb.toString();
     }
 
     /**
