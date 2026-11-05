@@ -13,15 +13,16 @@ Parla is a personal vocabulary management system designed for language learners.
 - **Smart Quizzing**: Get quizzed on words based on lookup frequency (harder words get more practice)
 - **Rare Word Testing**: Includes ~10% of rarely-looked-up words in quizzes to ensure you truly know them
 - **Progress Tracking**: Monitors how often you look up each word and tracks your quiz scores
-- **Data Persistence**: All words, lookup counts, and quiz scores are stored in a PostgreSQL database
+- **Data Persistence**: All words, lookup counts, and quiz scores are stored in a local SQLite database
 
 ## Installation
 
 ### Requirements
 - Java 25 or higher
 - Maven
-- PostgreSQL database server
 - A terminal/command line interface
+
+No database server is needed: Parla stores everything in a local SQLite file.
 
 ### Steps
 
@@ -36,34 +37,26 @@ Parla is a personal vocabulary management system designed for language learners.
    mvn exec:java
 ```
 
-### PostgreSQL setup
+### Data storage
 
-1. Start PostgreSQL and create the database:
+On first launch, Parla creates `parla.db` in the directory you run it from, along with the tables it needs. To store the database elsewhere, set `PARLA_DB_PATH`:
 ```bash
-   createdb parla
-```
-2. Create a dedicated user and grant privileges:
-```bash
-   createuser parla
-   psql -c "ALTER USER parla WITH PASSWORD 'parla'"
-   psql -c "GRANT ALL PRIVILEGES ON DATABASE parla TO parla"
-```
-3. Optionally override defaults using environment variables:
-```bash
-   export PARLA_DB_URL=jdbc:postgresql://localhost:5432/parla
-   export PARLA_DB_USER=parla
-   export PARLA_DB_PASSWORD=parla
+   export PARLA_DB_PATH=/path/to/parla.db
 ```
 
 ## Usage
 
-Once the program starts, you'll see a prompt (`>`). Enter commands to interact with Parla:
+After `mvn exec:java`, the `>` prompt appears immediately. Type a command and its arguments on a single line, then press Enter:
+
+```
+> add spanish perro dog
+Word added: perro -> dog (spanish)
+```
 
 ### Commands
 
-#### `add`
-Add new words to your vocabulary database. You'll be prompted to enter words in this format:
-<language> <foreign_word> <english_translation>
+#### `add <language> <foreign_word> <english_translation>`
+Add a new word to your vocabulary database.
 
 #### `translate <foreign_word>`
 Look up the English translation of a foreign word. The app tracks lookups to identify which words you struggle with.
@@ -73,6 +66,12 @@ Take a quiz on your vocabulary. The app selects words intelligently:
 - **90%** of questions come from frequently-looked-up words (these are harder for you)
 - **10%** of questions come from rarely-looked-up words (to ensure you truly know them)
 - If you answer incorrectly, that word is marked as looked-up, so it'll appear more in future quizzes
+
+#### `list`
+Display all words sorted by the date they were added.
+
+#### `stats`
+Display statistics and quiz history with scores and words quizzed.
 
 #### `help`
 Display all available commands.

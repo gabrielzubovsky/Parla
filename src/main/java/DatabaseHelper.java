@@ -4,36 +4,33 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Handles creation and lifecycle management of the PostgreSQL database.
+ * Handles creation and lifecycle management of the SQLite database.
  * <p>
- * This class opens a JDBC connection to PostgreSQL, creates the required tables
- * if they do not yet exist, and exposes the live {@link Connection}.
+ * This class opens a JDBC connection to a local SQLite file (created on first
+ * use), creates the required tables if they do not yet exist, and exposes the
+ * live {@link Connection}.
  */
 public class DatabaseHelper {
-    private static final String DEFAULT_URL = "jdbc:postgresql://localhost:5432/parla";
-    private static final String DEFAULT_USER = "parla";
-    private static final String DEFAULT_PASSWORD = "parla";
+    private static final String DEFAULT_PATH = "parla.db";
 
     private Connection conn;
 
     /**
-     * Opens the PostgreSQL database connection and ensures the schema exists.
+     * Opens the SQLite database and ensures the schema exists.
      * <p>
-     * It reads configuration from environment variables:
-     * <ul>
-     *   <li>{@code PARLA_DB_URL}</li>
-     *   <li>{@code PARLA_DB_USER}</li>
-     *   <li>{@code PARLA_DB_PASSWORD}</li>
-     * </ul>
+     * The database file defaults to {@code parla.db} in the working directory
+     * and can be overridden with the {@code PARLA_DB_PATH} environment variable.
+     * The file is created automatically if it does not exist.
      *
      * @throws SQLException if the database cannot be opened or initialized
      */
     public void connect() throws SQLException {
-        String url = System.getenv().getOrDefault("PARLA_DB_URL", DEFAULT_URL);
-        String user = System.getenv().getOrDefault("PARLA_DB_USER", DEFAULT_USER);
-        String password = System.getenv().getOrDefault("PARLA_DB_PASSWORD", DEFAULT_PASSWORD);
+        String path = System.getenv().getOrDefault("PARLA_DB_PATH", DEFAULT_PATH);
 
-        conn = DriverManager.getConnection(url, user, password);
+        conn = DriverManager.getConnection("jdbc:sqlite:" + path);
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("PRAGMA foreign_keys = ON");
+        }
         initializeSchema();
     }
 
@@ -45,7 +42,7 @@ public class DatabaseHelper {
     private void initializeSchema() throws SQLException {
         try (Statement stmt = conn.createStatement()) {
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS words ("
-                    + "id SERIAL PRIMARY KEY, "
+                    + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + "language TEXT NOT NULL, "
                     + "foreign_word TEXT NOT NULL, "
                     + "english TEXT NOT NULL, "
@@ -54,14 +51,14 @@ public class DatabaseHelper {
                     + ")");
 
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS quizzes ("
-                    + "id SERIAL PRIMARY KEY, "
+                    + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + "date TEXT NOT NULL, "
                     + "score INTEGER NOT NULL, "
                     + "num_questions INTEGER NOT NULL"
                     + ")");
 
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS quiz_words ("
-                    + "id SERIAL PRIMARY KEY, "
+                    + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + "quiz_id INTEGER NOT NULL REFERENCES quizzes(id), "
                     + "foreign_word TEXT NOT NULL, "
                     + "translation TEXT NOT NULL"
