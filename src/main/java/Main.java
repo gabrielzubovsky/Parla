@@ -18,9 +18,16 @@ public class Main {
 
             switch (cmd) {
                 case "add": {
-                    String language = scanner.next();
+                    String languageInput = scanner.next();
                     String foreignWord = scanner.next();
                     String english = scanner.next();
+                    Language language;
+                    try {
+                        language = Language.parse(languageInput);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage() + "\n");
+                        continue;
+                    }
                     if (words.isValid(foreignWord) && words.isValid(english)) {
                         words.addWord(language, foreignWord, english);
                         System.out.println("Word added: " + foreignWord + " -> " + english + " (" + language + ")\n");
@@ -34,7 +41,7 @@ public class Main {
                     String foreignWord = scanner.next();
                     String translation = words.lookup(foreignWord);
                     if (translation != null) {
-                        String wordLanguage = words.getLanguage(foreignWord);
+                        Language wordLanguage = words.getLanguage(foreignWord);
                         System.out.println("The English translation of " + foreignWord + " (" + wordLanguage + ") is: " + translation + "\n"); 
                     } else {
                         System.out.println("Word not found in database.\n");
@@ -88,6 +95,7 @@ public class Main {
                 case "help":
                     System.out.println("Available commands:");
                     System.out.println("add <language> <foreign_word> <english_translation> - Add new words to the database.");
+                    System.out.println("    <language> is a name (spanish) or ISO code (es). Supported: " + Language.supportedList());
                     System.out.println("translate <foreign_word> - Translate a foreign word to English.");
                     System.out.println("quiz <number_of_questions> - Take a quiz on the words in the database.");
                     System.out.println("list - Display all words sorted by the date they were added.");

@@ -19,7 +19,7 @@ Parla is a personal vocabulary management system designed for language learners.
 
 ### Requirements
 - Java 25 or higher
-- Maven
+- Maven is not required: the included Maven Wrapper (`./mvnw`) downloads Maven 3.9.16 on first use
 - A terminal/command line interface
 
 No database server is needed: Parla stores everything in a local SQLite file.
@@ -28,13 +28,13 @@ No database server is needed: Parla stores everything in a local SQLite file.
 
 1. Clone or download the Parla repository
 2. Navigate to the project directory
-3. Build the project with Maven:
+3. Build the project with the Maven Wrapper:
 ```bash
-   mvn compile
+   ./mvnw compile
 ```
-4. Run the program with Maven:
+4. Run the program with the Maven Wrapper:
 ```bash
-   mvn exec:java
+   ./mvnw exec:java
 ```
 
 ### Data storage
@@ -46,7 +46,7 @@ On first launch, Parla creates `parla.db` in the directory you run it from, alon
 
 ## Usage
 
-After `mvn exec:java`, the `>` prompt appears immediately. Type a command and its arguments on a single line, then press Enter:
+After `./mvnw exec:java`, the `>` prompt appears immediately. Type a command and its arguments on a single line, then press Enter:
 
 ```
 > add spanish perro dog

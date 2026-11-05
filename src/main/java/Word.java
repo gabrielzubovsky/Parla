@@ -9,7 +9,7 @@ import java.time.LocalDate;
  */
 public class Word {
     protected int id;
-    protected String language;
+    protected Language language;
     protected String foreign;
     protected String english;
     protected int lookups;
@@ -19,13 +19,13 @@ public class Word {
      * Creates a new Word record.
      *
      * @param id the database ID, or -1 if not yet persisted
-     * @param language the language name
+     * @param language the language of the word
      * @param foreign the foreign word text
      * @param english the English translation
      * @param lookups how many times the word has been looked up
      * @param addedDate the date the word was created
      */
-    public Word(int id, String language, String foreign, String english, int lookups, LocalDate addedDate) {
+    public Word(int id, Language language, String foreign, String english, int lookups, LocalDate addedDate) {
         this.id = id;
         this.language = language;
         this.foreign = foreign;
